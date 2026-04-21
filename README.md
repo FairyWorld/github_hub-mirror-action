@@ -18,6 +18,8 @@ steps:
     dst: gitee/kunpengcompute
     dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
     dst_token: ${{ secrets.GITEE_TOKEN }}
+    # 如果源端需要认证（如组织或私有仓库），请配置 src_token
+    # src_token: ${{ secrets.GITHUB_TOKEN }}
     # 支持Github/Gitee/Gitcode的用户、组织以及Gitlab的组
     account_type: org
     # 支持分别设置源和目的端的类型
@@ -40,9 +42,10 @@ steps:
 - `src` 需要被同步的源端账户名，如github/kunpengcompute，表示Github的kunpengcompute账户。
 - `dst` 需要同步到的目的端账户名，如gitee/kunpengcompute，表示Gitee的kunpengcompute账户。
 - `dst_key` 用于在目的端上传代码的私钥(默认可以从~/.ssh/id_rsa获取），可参考[生成/添加SSH公钥](https://gitee.com/help/articles/4181)或[generating SSH keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)生成，并确认对应公钥已经被正确配置在目的端。对应公钥，Github可以在[这里](https://github.com/settings/keys)配置，Gitee可以[这里](https://gitee.com/profile/sshkeys)配置，Gitlab可以在[这里](https://gitlab.com/-/user_settings/ssh_keys)配置。
-- `dst_token` 创建仓库的API tokens， 用于自动创建不存在的仓库，Github可以在[这里](https://github.com/settings/tokens)找到，Gitee可以在[这里](https://gitee.com/profile/personal_access_tokens)找到，Gitlab可以在[这里](https://gitlab.com/-/user_settings/personal_access_tokens)找到（Required scopes: api, read_api, read_repository, write_repository）。
+- `dst_token` 创建仓库的API tokens， 用于自动创建不存在的仓库，Github可以在[这里](https://github.com/settings/tokens)找到，Gitee可以在[这里](https://gitee.com/profile/personal_access_tokens)找到，Gitlab可以在[这里](https://gitlab.com/-/user_settings/personal_access_tokens)找到，Gitcode可以在[这里](https://gitcode.com/setting/token-classic)找到（Required scopes: api, read_api, read_repository, write_repository）。
 
 #### 可选参数
+- `src_token` 用于从源端获取仓库列表的API tokens。当源端为组织或私有仓库且需要认证时（如GitCode、Gitee），必须配置此参数。Github可以在[这里](https://github.com/settings/tokens)找到，Gitee可以在[这里](https://gitee.com/profile/personal_access_tokens)找到，Gitlab可以在[这里](https://gitlab.com/-/user_settings/personal_access_tokens)找到，Gitcode可以在[这里](https://gitcode.com/setting/token-classic)找到。
 - `account_type` 默认为user，源和目的的账户类型，可以设置为org（组织）、user（用户）或者group（组），该参数支持**同类型账户**（即组织到组织，或用户到用户，或组到组）的同步。如果源目的仓库是不同类型，请单独使用`src_account_type`和`dst_account_type`配置。
 - `src_account_type` 默认为`account_type`，源账户类型，可以设置为org（组织）、user（用户）或者group（组）。
 - `dst_account_type` 默认为`account_type`，目的账户类型，可以设置为org（组织）、user（用户）或者group（组）。
@@ -230,7 +233,7 @@ steps:
   - Gitee: 配置并保存[ssh key](https://gitee.com/profile/sshkeys)和[token](https://gitee.com/profile/personal_access_tokens)
   - Gitlab: 配置并保存[ssh key](https://gitlab.com/-/user/settings/keys)和[token](https://gitlab.com/-/user_settings/personal_access_tokens)
   - Gitcode: 配置并保存[ssh key](https://gitcode.com/setting/key-ssh)和[token](https://gitcode.com/setting/token-classic)
-  2. **增加Secrets配置**，在配置仓库的Setting-Secrets中新增Secrets，例如`GITEE_PRIVATE_KEY`\`GITLAB_PRIVATE_KEY`\`GITCODE_PRIVATE_KEY`、`GITEE_TOKEN`\`GITLAB_TOKEN`\`GITCODE_TOKEN`。
+   2. **增加Secrets配置**，在配置仓库的Setting-Secrets中新增Secrets，例如`GITEE_PRIVATE_KEY`\`GITLAB_PRIVATE_KEY`\`GITCODE_PRIVATE_KEY`、`GITEE_TOKEN`\`GITLAB_TOKEN`\`GITCODE_TOKEN`、`SRC_TOKEN`。
   3. **在Workflow中引用**， 可以用过类似`${{ secrets.GITEE_PRIVATE_KEY }}`来访问。
 
 ## 参考
